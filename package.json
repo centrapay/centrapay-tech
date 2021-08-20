@@ -7,19 +7,30 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
+    "build": "rm -rf dist && yarn build-eleventy && yarn build-css",
+    "build-eleventy": "eleventy --config eleventy.config.js",
+    "build-css": "tailwindcss src/css/styles.css -o dist/css/styles.css",
     "eleventy": "eleventy --config eleventy.config.js",
     "lint": "eslint .",
-    "start": "eleventy --config eleventy.config.js --serve --port 6180"
+    "start": "concurrently yarn:start-eleventy yarn:start-css",
+    "start-eleventy": "eleventy --config eleventy.config.js --serve --port 6180",
+    "start-css": "tailwindcss -i src/css/styles.css -o dist/css/styles.css --watch"
   },
   "devDependencies": {
     "@11ty/eleventy": "^0.12.1",
     "@11ty/eleventy-navigation": "^0.3.2",
     "@11ty/eleventy-plugin-rss": "^1.1.1",
     "@11ty/eleventy-plugin-syntaxhighlight": "^3.1.2",
+    "autoprefixer": "^10.3.1",
+    "concurrently": "^6.2.1",
+    "cssnano": "^5.0.8",
     "eslint": "^7.32.0",
     "eslint-plugin-node": "^11.1.0",
     "glob": "^7.1.7",
     "markdown-it": "^12.2.0",
-    "markdown-it-anchor": "^8.1.2"
+    "markdown-it-anchor": "^8.1.2",
+    "postcss": "^8.3.6",
+    "postcss-cli": "^8.3.1",
+    "tailwindcss": "^2.2.7"
   }
 }

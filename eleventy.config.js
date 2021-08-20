@@ -13,7 +13,6 @@ module.exports = function(eleventyConfig) {
   require('./src/_plugins')
     .forEach(plugin => eleventyConfig.addPlugin(plugin));
 
-  eleventyConfig.addPassthroughCopy('src/css');
   return {
     templateFormats: [
       'md',
