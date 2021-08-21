@@ -215,6 +215,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tailwindcss/typography@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@tailwindcss/typography@npm:0.4.1"
+  dependencies:
+    lodash.castarray: ^4.4.0
+    lodash.isplainobject: ^4.0.6
+    lodash.merge: ^4.6.2
+    lodash.uniq: ^4.5.0
+  peerDependencies:
+    tailwindcss: ">=2.0.0"
+  checksum: d234509964f59389d00ccc0529b033a5aa670a93149a48520cd2088d102b894cc746146052ea844a926bbea4b16904f5f6b2874399511bf78d55631bdb88ac68
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:1":
   version: 1.1.2
   resolution: "@tootallnate/once@npm:1.1.2"
@@ -898,6 +912,7 @@ __metadata:
     "@11ty/eleventy-navigation": ^0.3.2
     "@11ty/eleventy-plugin-rss": ^1.1.1
     "@11ty/eleventy-plugin-syntaxhighlight": ^3.1.2
+    "@tailwindcss/typography": ^0.4.1
     autoprefixer: ^10.3.1
     concurrently: ^6.2.1
     cssnano: ^5.0.8
@@ -3245,6 +3260,13 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"lodash.castarray@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "lodash.castarray@npm:4.4.0"
+  checksum: fca8c7047e0ae2738b0b2503fb00157ae0ff6d8a1b716f87ed715b22560e09de438c75b65e01a7e44ceb41c5b31dce2eb576e46db04beb9c699c498e03cbd00f
+  languageName: node
+  linkType: hard
+
 "lodash.clonedeep@npm:^4.5.0":
   version: 4.5.0
   resolution: "lodash.clonedeep@npm:4.5.0"
@@ -3284,6 +3306,13 @@ fsevents@~2.3.2:
   version: 3.3.2
   resolution: "lodash.isfinite@npm:3.3.2"
   checksum: 5e9f9c27fdcdb940f7d4bd3546f584502448004825ce42dc6c40cbee6a3de73d825f9aced3f5b50ff0f613b8dcb1b985fe6e29d172522d1d7975d3f8d02cef86
+  languageName: node
+  linkType: hard
+
+"lodash.isplainobject@npm:^4.0.6":
+  version: 4.0.6
+  resolution: "lodash.isplainobject@npm:4.0.6"
+  checksum: 29c6351f281e0d9a1d58f1a4c8f4400924b4c79f18dfc4613624d7d54784df07efaff97c1ff2659f3e085ecf4fff493300adc4837553104cef2634110b0d5337
   languageName: node
   linkType: hard
 
