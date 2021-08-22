@@ -1,0 +1,36 @@
+<header class="bg-indigo-600">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
+    <div class="w-full py-6 flex items-center justify-between border-b border-indigo-500 lg:border-none">
+      <div class="flex items-center">
+        <a href="/">
+          <span class="sr-only">{{ metadata.title }}</span>
+          <img class="h-10 w-auto" src="https://tailwindui.com/img/logos/workflow-mark.svg?color=white" alt="">
+        </a>
+        <div class="hidden ml-10 space-x-8 lg:block">
+
+          {%- for entry in collections.all | eleventyNavigation %}
+            <a
+              class="text-base font-medium text-white hover:text-indigo-50"
+              href="{{ entry.url | url }}"
+              key="{{ entry.title }}">
+              {{ entry.title }}
+            </a>
+          {%- endfor %}
+
+        </div>
+      </div>
+    </div>
+    <div class="py-4 flex flex-wrap justify-center space-x-6 lg:hidden">
+
+        {%- for entry in collections.all | eleventyNavigation %}
+          <a
+            class="text-base font-medium text-white hover:text-indigo-50"
+            href="{{ entry.url | url }}"
+            key="{{ entry.title }}">
+            {{ entry.title }}
+          </a>
+        {%- endfor %}
+
+    </div>
+  </nav>
+</header>
