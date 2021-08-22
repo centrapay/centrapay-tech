@@ -1,0 +1,19 @@
+{% macro TagLink(tag) %}
+  {% set tagUrl %}
+    /tags/{{ tag | slug }}/
+  {% endset %}
+  <a href="{{ tagUrl | url }}">
+    <span class="
+      inline-flex
+      items-center
+      px-2.5
+      py-0.5
+      rounded-md
+      text-sm
+      font-medium
+      bg-indigo-100
+      text-indigo-800">
+      {{ tag }}
+    </span>
+  </a>
+{% endmacro %}
