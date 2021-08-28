@@ -1,3 +1,4 @@
 {
   baseUrl: 'https://tech.centrapay.com',
+  disqusShortname: 'centrapay-tech',
 }

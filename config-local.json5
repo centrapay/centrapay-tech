@@ -1,3 +1,4 @@
 {
   baseUrl: 'http://localhost:6180',
+  disqusShortname: 'centrapay-test',
 }

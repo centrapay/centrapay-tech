@@ -55,7 +55,9 @@ templateClass: tmpl-post
       </div>
       <div class="mt-6 prose prose-indigo prose-lg text-gray-500 mx-auto">
         {{ content | safe }}
+        {% include "disqus.njk" %}
       </div>
+
     </div>
   </div>
 
