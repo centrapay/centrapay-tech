@@ -1,0 +1,10 @@
+---
+permalink: _redirects
+eleventyExcludeFromCollections: true
+# https://docs.netlify.com/routing/redirects/
+---
+{%- for page in collections.all %}
+  {%- for from in page.data.alias   | array %}
+    {{- from }}  {{ page.url }} {{ '\n' }}
+  {%- endfor -%}
+{%- endfor -%}
