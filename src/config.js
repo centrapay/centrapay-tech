@@ -18,6 +18,11 @@ const schema = {
     default: null,
     env: 'BASE_URL'
   },
+  disqusShortname: {
+    format: String,
+    default: null,
+    env: 'DISQUS_SHORTNAME'
+  },
 };
 
 const config = convict(schema);
