@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rm -rf dist && yarn build-eleventy && yarn build-css",
     "build-eleventy": "eleventy --config eleventy.config.js",
-    "build-css": "tailwindcss src/css/styles.css -o dist/css/styles.css",
+    "build-css": "tailwindcss src/css/styles.css -o dist/css/styles.css --minify",
     "eleventy": "eleventy --config eleventy.config.js",
     "lint": "eslint .",
     "start": "concurrently yarn:start-eleventy yarn:start-css",
