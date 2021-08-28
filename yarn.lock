@@ -915,6 +915,7 @@ __metadata:
     "@tailwindcss/typography": ^0.4.1
     autoprefixer: ^10.3.1
     concurrently: ^6.2.1
+    convict: ^5.2.1
     cssnano: ^5.0.8
     eslint: ^7.32.0
     eslint-plugin-node: ^11.1.0
@@ -1245,6 +1246,19 @@ __metadata:
     "@babel/parser": ^7.6.0
     "@babel/types": ^7.6.1
   checksum: 8f70f16ddf97cdc263ca16b398bc52470c25e2ec5ed27bc015f251b849597223ce3a123e6924f43efddeb75422c1f55b7e56e0e2e594e4dd2964bfc9392b9b82
+  languageName: node
+  linkType: hard
+
+"convict@npm:^5.2.1":
+  version: 5.2.1
+  resolution: "convict@npm:5.2.1"
+  dependencies:
+    json5: 2.1.0
+    lodash.clonedeep: 4.5.0
+    moment: 2.24.0
+    validator: 11.1.0
+    yargs-parser: 13.1.2
+  checksum: 716950d10c12853425ea3ed391090488586d1c945d286c3ce5d2ba3be933b7feafb12ae3bdb4ee29157f83b755cb28f740de896e600d8228e47c5f46df96e84b
   languageName: node
   linkType: hard
 
@@ -3090,6 +3104,17 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"json5@npm:2.1.0":
+  version: 2.1.0
+  resolution: "json5@npm:2.1.0"
+  dependencies:
+    minimist: ^1.2.0
+  bin:
+    json5: lib/cli.js
+  checksum: ecd42a1d79ac40ae5b236a3a4a14959b4372f9c5915810029c56865904c8cf6e8ae671ff0083a3c381057e35de79635ba719fc1683e0fb350f42baa88a3c64ba
+  languageName: node
+  linkType: hard
+
 "jsonfile@npm:^3.0.0":
   version: 3.0.1
   resolution: "jsonfile@npm:3.0.1"
@@ -3267,7 +3292,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"lodash.clonedeep@npm:^4.5.0":
+"lodash.clonedeep@npm:4.5.0, lodash.clonedeep@npm:^4.5.0":
   version: 4.5.0
   resolution: "lodash.clonedeep@npm:4.5.0"
   checksum: 92c46f094b064e876a23c97f57f81fbffd5d760bf2d8a1c61d85db6d1e488c66b0384c943abee4f6af7debf5ad4e4282e74ff83177c9e63d8ff081a4837c3489
@@ -3537,7 +3562,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.1.1, minimist@npm:^1.2.5":
+"minimist@npm:^1.1.1, minimist@npm:^1.2.0, minimist@npm:^1.2.5":
   version: 1.2.5
   resolution: "minimist@npm:1.2.5"
   checksum: 86706ce5b36c16bfc35c5fe3dbb01d5acdc9a22f2b6cc810b6680656a1d2c0e44a0159c9a3ba51fb072bb5c203e49e10b51dcd0eec39c481f4c42086719bae52
@@ -3645,6 +3670,13 @@ fsevents@~2.3.2:
   version: 1.1.0
   resolution: "modern-normalize@npm:1.1.0"
   checksum: edfd40650bd7250eb4761651886a02ca3c524effca41b9832932eab9ccf9f2cfa7e5da8491c7c8bc2d58e1696e5e765adebeaf90cd9d3376444bd6bc0b0f2c99
+  languageName: node
+  linkType: hard
+
+"moment@npm:2.24.0":
+  version: 2.24.0
+  resolution: "moment@npm:2.24.0"
+  checksum: 9cd93a251a2b33cb1b532eade0e496a2a7547faa6cfe37a283ee7bf69e202cd7c8ab0673d66883b5b29aed051353176dc0e6684f04073a75b0a155c500be1580
   languageName: node
   linkType: hard
 
@@ -6005,6 +6037,13 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"validator@npm:11.1.0":
+  version: 11.1.0
+  resolution: "validator@npm:11.1.0"
+  checksum: a8404c6a25683acda9565c7fb31476a2078f79e0f8390153c90def68d59b5b096f9b7945ef14ddf0d0ffa48f8315ee48c3cfa3bd376f2f0a3e35b030c8dcb792
+  languageName: node
+  linkType: hard
+
 "vendors@npm:^1.0.3":
   version: 1.0.4
   resolution: "vendors@npm:1.0.4"
@@ -6162,6 +6201,16 @@ fsevents@~2.3.2:
   version: 1.10.2
   resolution: "yaml@npm:1.10.2"
   checksum: ce4ada136e8a78a0b08dc10b4b900936912d15de59905b2bf415b4d33c63df1d555d23acb2a41b23cf9fb5da41c256441afca3d6509de7247daa062fd2c5ea5f
+  languageName: node
+  linkType: hard
+
+"yargs-parser@npm:13.1.2":
+  version: 13.1.2
+  resolution: "yargs-parser@npm:13.1.2"
+  dependencies:
+    camelcase: ^5.0.0
+    decamelize: ^1.2.0
+  checksum: c8bb6f44d39a4acd94462e96d4e85469df865de6f4326e0ab1ac23ae4a835e5dd2ddfe588317ebf80c3a7e37e741bd5cb0dc8d92bcc5812baefb7df7c885e86b
   languageName: node
   linkType: hard
 
