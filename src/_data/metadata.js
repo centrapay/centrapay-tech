@@ -19,9 +19,4 @@ module.exports = {
     path: '/feed/feed.json',
     url: `${baseUrl}/feed/feed.json`
   },
-  author: {
-    name: 'Your Name Here',
-    email: 'youremailaddress@example.com',
-    url: 'https://example.com/about-me/'
-  }
 };
