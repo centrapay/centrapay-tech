@@ -20,6 +20,7 @@ module.exports = function(eleventyConfig) {
   require('./src/_plugins')
     .forEach(plugin => eleventyConfig.addPlugin(plugin));
 
+  eleventyConfig.addPassthroughCopy('src/favicon.ico');
   return {
     templateFormats: [
       'md',
