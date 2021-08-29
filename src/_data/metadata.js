@@ -5,7 +5,7 @@ const config = require('../config');
 const baseUrl = config.get('baseUrl');
 
 module.exports = {
-  title: 'Your Blog Name',
+  title: 'Centrapay Engineering',
   url: `${baseUrl}/`,
   githubUrl: 'https://github.com/centrapay',
   twitterUrl: 'https://twitter.com/centrapay',
@@ -13,9 +13,9 @@ module.exports = {
   instagramUrl: 'https://www.instagram.com/centrapay',
   facebookUrl: 'https://www.facebook.com/centrapay',
   language: 'en',
-  description: 'I am writing about my experiences as a naval navel-gazer.',
+  description: 'News from the Centrapay Engineering team.',
   feed: {
-    subtitle: 'I am writing about my experiences as a naval navel-gazer.',
+    subtitle: 'News from the Centrapay Engineering team.',
     filename: 'feed.xml',
     path: '/feed/feed.xml',
     id: baseUrl,
