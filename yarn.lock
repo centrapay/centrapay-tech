@@ -854,6 +854,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cachekill@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "cachekill@npm:3.0.2"
+  dependencies:
+    commander: ~7.2.0
+    fast-glob: ~3.2.5
+    replace-in-file: ~6.2.0
+  bin:
+    cachekill: cli.js
+  checksum: 0e362146372efa37981583b7a99b33f3ca53884f6ba4fa8cea59cb711da28c580a2a8748513d4f6a711fd259a92fe4a94e536f860a8807411b1cae27afce8a14
+  languageName: node
+  linkType: hard
+
 "call-bind@npm:^1.0.2":
   version: 1.0.2
   resolution: "call-bind@npm:1.0.2"
@@ -914,6 +927,7 @@ __metadata:
     "@11ty/eleventy-plugin-syntaxhighlight": ^3.1.2
     "@tailwindcss/typography": ^0.4.1
     autoprefixer: ^10.3.1
+    cachekill: ^3.0.2
     concurrently: ^6.2.1
     convict: ^5.2.1
     cssnano: ^5.0.8
@@ -1131,7 +1145,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^7.1.0":
+"commander@npm:^7.1.0, commander@npm:~7.2.0":
   version: 7.2.0
   resolution: "commander@npm:7.2.0"
   checksum: 53501cbeee61d5157546c0bef0fedb6cdfc763a882136284bed9a07225f09a14b82d2a84e7637edfd1a679fb35ed9502fd58ef1d091e6287f60d790147f68ddc
@@ -2092,7 +2106,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.1.1, fast-glob@npm:^3.2.5, fast-glob@npm:^3.2.7":
+"fast-glob@npm:^3.1.1, fast-glob@npm:^3.2.5, fast-glob@npm:^3.2.7, fast-glob@npm:~3.2.5":
   version: 3.2.7
   resolution: "fast-glob@npm:3.2.7"
   dependencies:
@@ -2364,7 +2378,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.0.0, glob@npm:^7.0.3, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.7":
+"glob@npm:^7.0.0, glob@npm:^7.0.3, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6, glob@npm:^7.1.7":
   version: 7.1.7
   resolution: "glob@npm:7.1.7"
   dependencies:
@@ -4999,6 +5013,19 @@ fsevents@~2.3.2:
   version: 3.2.0
   resolution: "regexpp@npm:3.2.0"
   checksum: a78dc5c7158ad9ddcfe01aa9144f46e192ddbfa7b263895a70a5c6c73edd9ce85faf7c0430e59ac38839e1734e275b9c3de5c57ee3ab6edc0e0b1bdebefccef8
+  languageName: node
+  linkType: hard
+
+"replace-in-file@npm:~6.2.0":
+  version: 6.2.0
+  resolution: "replace-in-file@npm:6.2.0"
+  dependencies:
+    chalk: ^4.1.0
+    glob: ^7.1.6
+    yargs: ^16.2.0
+  bin:
+    replace-in-file: bin/cli.js
+  checksum: db0cdc217d529334009b248be5ca92fe1c240711a0ae9b2186eff1e99eb64de0dcfc47ace6e62a892d9c11b4db7786fc38a27f377b0ddcad6fa63972bdc91c84
   languageName: node
   linkType: hard
 
