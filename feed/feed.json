@@ -5,10 +5,6 @@
   "home_page_url": "https://tech.centrapay.com/",
   "feed_url": "https://tech.centrapay.com/feed/feed.json",
   "description": "I am writing about my experiences as a naval navel-gazer.",
-  "author": {
-    "name": "Your Name Here",
-    "url": "https://example.com/about-me/"
-  },
   "items": [{
       "id": "https://tech.centrapay.com/posts/fourthpost/",
       "url": "https://tech.centrapay.com/posts/fourthpost/",
