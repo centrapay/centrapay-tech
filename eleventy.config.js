@@ -20,6 +20,13 @@ module.exports = function(eleventyConfig) {
   require('./src/_plugins')
     .forEach(plugin => eleventyConfig.addPlugin(plugin));
 
+  // TODO choose either test content or main content
+  // requires upcoming eleventy v1.0.0
+  // https://www.11ty.dev/docs/ignores/
+  // eleventyConfig.ignores.add('src/content.main');
+  // eleventyConfig.ignores.add('src/content.test');
+  // eleventyConfig.ignores.remove(config.get('contentDir'));
+
   eleventyConfig.addPassthroughCopy('src/favicon.ico');
   return {
     templateFormats: [
