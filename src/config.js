@@ -13,6 +13,16 @@ const schema = {
     default: env,
     env: 'ENV'
   },
+  commitId: {
+    format: String,
+    default: 'Unknown',
+    env: 'GITHUB_SHA'
+  },
+  buildDate: {
+    format: String,
+    default: new Date().toISOString(),
+    env: 'BUILD_DATE'
+  },
   baseUrl: {
     format: String,
     default: null,
