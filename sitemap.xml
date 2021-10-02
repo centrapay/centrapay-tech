@@ -23,41 +23,41 @@
   
   <url>
     <loc>https://tech.centrapay.com/posts/</loc>
-    <lastmod>2021-09-03</lastmod>
+    <lastmod>2021-10-02</lastmod>
   </url>
   
   <url>
     <loc>https://tech.centrapay.com/</loc>
-    <lastmod>2021-09-03</lastmod>
+    <lastmod>2021-10-02</lastmod>
   </url>
   
   <url>
     <loc>https://tech.centrapay.com/page-list/</loc>
-    <lastmod>2021-09-03</lastmod>
+    <lastmod>2021-10-02</lastmod>
   </url>
   
   <url>
     <loc>https://tech.centrapay.com/tags/</loc>
-    <lastmod>2021-09-03</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://tech.centrapay.com/tags/another-tag/</loc>
-    <lastmod>2021-09-03</lastmod>
+    <lastmod>2021-10-02</lastmod>
   </url>
   
   <url>
     <loc>https://tech.centrapay.com/tags/second-tag/</loc>
-    <lastmod>2021-09-03</lastmod>
+    <lastmod>2021-10-02</lastmod>
   </url>
   
   <url>
-    <loc>https://tech.centrapay.com/tags/posts-with-two-tags/</loc>
-    <lastmod>2021-09-03</lastmod>
+    <loc>https://tech.centrapay.com/tags/another-tag/</loc>
+    <lastmod>2021-10-02</lastmod>
   </url>
   
   <url>
     <loc>https://tech.centrapay.com/tags/number-2/</loc>
-    <lastmod>2021-09-03</lastmod>
+    <lastmod>2021-10-02</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://tech.centrapay.com/tags/posts-with-two-tags/</loc>
+    <lastmod>2021-10-02</lastmod>
   </url>
 </urlset>

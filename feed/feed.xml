@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title>Centrapay Engineering</title>
-	<subtitle>News from the Centrapay Engineering team.</subtitle>
+	<subtitle>News and views from the Centrapay Engineering team</subtitle>
 	
 	<link href="https://tech.centrapay.com/feed/feed.xml" rel="self"/>
 	<link href="https://tech.centrapay.com/"/>

@@ -4,7 +4,7 @@
   "language": "en",
   "home_page_url": "https://tech.centrapay.com/",
   "feed_url": "https://tech.centrapay.com/feed/feed.json",
-  "description": "News from the Centrapay Engineering team.",
+  "description": "News and views from the Centrapay Engineering team",
   "items": [{
       "id": "https://tech.centrapay.com/posts/fourthpost/",
       "url": "https://tech.centrapay.com/posts/fourthpost/",
