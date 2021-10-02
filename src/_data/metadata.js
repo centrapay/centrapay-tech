@@ -13,9 +13,9 @@ module.exports = {
   instagramUrl: 'https://www.instagram.com/centrapay',
   facebookUrl: 'https://www.facebook.com/centrapay',
   language: 'en',
-  description: 'News from the Centrapay Engineering team.',
+  description: 'News and views from the Centrapay Engineering team',
   feed: {
-    subtitle: 'News from the Centrapay Engineering team.',
+    subtitle: 'News and views from the Centrapay Engineering team',
     filename: 'feed.xml',
     path: '/feed/feed.xml',
     id: baseUrl,
