@@ -12,15 +12,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@11ty/eleventy-navigation@npm:^0.3.2":
-  version: 0.3.2
-  resolution: "@11ty/eleventy-navigation@npm:0.3.2"
-  dependencies:
-    dependency-graph: ^0.11.0
-  checksum: bd5aea430577dd4b0934d63d1526c798989cc0ac8b3014f7ceaf2a696a39c0b80e72766f74b1a5f0bab01a6ce97da74f920c91da6b5460017597b4f73e24ee68
-  languageName: node
-  linkType: hard
-
 "@11ty/eleventy-plugin-rss@npm:^1.1.1":
   version: 1.1.1
   resolution: "@11ty/eleventy-plugin-rss@npm:1.1.1"
@@ -922,7 +913,6 @@ __metadata:
   resolution: "centrapay-dev-blog@workspace:."
   dependencies:
     "@11ty/eleventy": ^0.12.1
-    "@11ty/eleventy-navigation": ^0.3.2
     "@11ty/eleventy-plugin-rss": ^1.1.1
     "@11ty/eleventy-plugin-syntaxhighlight": ^3.1.2
     "@tailwindcss/typography": ^0.4.1

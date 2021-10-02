@@ -10,7 +10,7 @@
         </a>
         <div class="hidden ml-10 space-x-8 lg:block">
 
-          {%- for entry in collections.all | eleventyNavigation %}
+          {%- for entry in metadata.nav %}
             <a
               class="text-base font-medium text-white hover:text-indigo-50"
               href="{{ entry.url | url }}"
@@ -24,7 +24,7 @@
     </div>
     <div class="py-4 flex flex-wrap justify-center space-x-6 lg:hidden">
 
-        {%- for entry in collections.all | eleventyNavigation %}
+        {%- for entry in metadata.nav %}
           <a
             class="text-base font-medium text-white hover:text-indigo-50"
             href="{{ entry.url | url }}"

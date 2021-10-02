@@ -14,6 +14,16 @@ module.exports = {
   facebookUrl: 'https://www.facebook.com/centrapay',
   language: 'en',
   description: 'News and views from the Centrapay Engineering team',
+  nav: [
+    {
+      title: 'Home',
+      url: '/',
+    },
+    {
+      title: 'Archive',
+      url: '/posts/',
+    },
+  ],
   feed: {
     subtitle: 'News and views from the Centrapay Engineering team',
     filename: 'feed.xml',
