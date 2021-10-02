@@ -6,6 +6,9 @@
   "author": "Nathan Jones <nathan@ncjones.com>",
   "license": "UNLICENSED",
   "private": true,
+  "engines": {
+    "node": ">=12.9"
+  },
   "scripts": {
     "build": "rm -rf dist && yarn build-eleventy && yarn build-css && yarn build-cachekill",
     "build-eleventy": "eleventy --config eleventy.config.js",
