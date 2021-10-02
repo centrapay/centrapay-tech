@@ -16,7 +16,12 @@ eleventyComputed:
 permalink: /tags/{{ tag | slug }}/
 ---
 
-{% set postslist = collections[ tag ] %}
-{% include "postslist.njk" %}
 
-<p>See <a href="{{ '/tags/' | url }}">all tags</a>.</p>
+<div class="mt-12 grid gap-16 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-12">
+  {% set postslist = collections[ tag ] %}
+  {% include "postslist.njk" %}
+</div>
+
+<p class="p-6 my-6">
+  <a href="{{ '/tags/' | url }}">Tag List →</a>
+</p>
