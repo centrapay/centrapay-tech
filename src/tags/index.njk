@@ -7,5 +7,7 @@ title: Tags
 {% from "components/TagLink.njk" import TagLink %}
 
 {% for tag in collections.tagList %}
+  <div class="inline-block py-1">
   {{ TagLink(tag) }}
+  </div>
 {% endfor %}
