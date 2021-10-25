@@ -29,7 +29,7 @@ const authorsList = [
     name: 'Nathan Jones',
     twitter: '_ncjones',
     linkedIn: 'nathan-c-jones',
-    img: 'https://centrapay.com/wp-content/uploads/2020/08/3.png',
+    img: '/img/nathan-bfde749b7bf5332e977dc6f3da9ba51b.jpg',
   }
 ].map(Author.make);
 
