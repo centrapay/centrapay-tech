@@ -7,7 +7,7 @@
     <div class="flex-shrink-0">
       <a href="{{ post.url }}">
         {% if post.data.img %}
-          <img class="h-48 w-full object-cover" src="{{ post.data.img }}" alt="">
+          <img class="h-48 w-full object-cover" src="{{ post.data.img.url }}" alt="">
         {% else %}
            <div class="h-48 bg-indigo-600" ></div>
         {% endif %}

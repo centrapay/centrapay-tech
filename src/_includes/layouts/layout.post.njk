@@ -14,7 +14,12 @@ templateClass: tmpl-post
       <div class="relative bg-indigo-600 px-4 sm:px-6 lg:px-8">
         {% if img %}
           <div class="absolute inset-0">
-          <img class="w-full h-full object-cover" src="{{ img }}">
+          <!--
+          Image: {{ img.url }}
+          License: {{ img.license }}
+          Credit: {{ img.credit.name }} {{ img.credit.url }}
+          -->
+          <img class="w-full h-full object-cover" src="{{ img.url }}">
             <div class="absolute inset-0 bg-indigo-300 mix-blend-multiply" aria-hidden="true"></div>
           </div>
         {% endif %}

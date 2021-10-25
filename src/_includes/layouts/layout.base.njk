@@ -10,7 +10,7 @@
     <meta property="og:url" content="{{ config.baseUrl }}{{ page.url | url }}">
     <meta property="og:site_name" content="{{ metadata.title }}">
     {% if img %}
-      <meta property="og:image" content="{{ img }}">
+      <meta property="og:image" content="{{ img.url }}">
     {% endif %}
     <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="{{ '/css/styles.css' | url }}">
