@@ -25,7 +25,7 @@ templateClass: tmpl-post
         {% endif %}
         <div class="text-lg relative py-16 sm:py-24 max-w-prose mx-auto">
         <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">{{ title }}</h1>
-        <p class="mt-6 text-xl text-indigo-100 max-w-3xl">{{ description }}</p>
+        <p class="mt-6 text-xl text-white max-w-3xl">{{ description }}</p>
         </div>
       </div>
     </h1>
@@ -36,18 +36,18 @@ templateClass: tmpl-post
 
         <span class="block text-base text-center leading-8 text-indigo-600 font-semibold tracking-wide">
           {{ author.name }}
-          <span aria-hidden="true">
+          <span aria-hidden="true" class="sm:px-2">
             &middot;
           </span>
           <time datetime="{{ page.date | htmlDateString }}">{{ page.date | readableDate }}</time>
-          <span aria-hidden="true">
+          <span aria-hidden="true" class="sm:px-2">
             &middot;
           </span>
           {{ readingTime }} min read
         </span>
 
         <div class="flex items-center justify-center bg-white pt-4">
-          <div class="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:space-x-4">
+          <div class="flex flex-row space-y-4 space-y-0 space-x-4">
             {%- for tag in tags | customTags -%}
               {{ TagLink(tag) }}
             {%- endfor %}
