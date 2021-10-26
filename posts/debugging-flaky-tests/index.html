@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debugging Flaky Tests - Centrapay Engineering</title>
+    <meta property="og:title" content="Debugging Flaky Tests">
+    <meta name="description" content="Strategies for maintaining reliability of automated test suites">
+    <meta property="og:description" content="Strategies for maintaining reliability of automated test suites">
+    <meta property="og:url" content="https://tech.centrapay.com/posts/debugging-flaky-tests/">
+    <meta property="og:site_name" content="Centrapay Engineering">
+    
+      <meta property="og:image" content="https://live.staticflickr.com/5448/9984565853_d24bd6657a_3k.jpg">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="/css/styles-9dfa9da4a2bd08e5faf5777f0f55108d.css">
+    <link href="https://unpkg.com/prismjs@1.20.0/themes/prism-okaidia.css" rel="stylesheet">
+    <link rel="alternate" href="/feed/feed.xml" type="application/atom+xml" title="Centrapay Engineering">
+    <link rel="alternate" href="/feed/feed.json" type="application/json" title="Centrapay Engineering">
+  </head>
+  <body>
+
+    
+
+
+<header class="bg-indigo-600">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
+    <div class="w-full py-6 flex items-center justify-between border-b border-indigo-500 lg:border-none">
+      <div class="flex items-center">
+        <a href="https://centrapay.com/">
+          <span class="sr-only">Centrapay</span>
+          <svg class="h-12 w-auto fill-current text-white" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 3H14.25C17.9559 3 20.9689 6.0625 21 9.75C21 13.5 17.987 16.5 14.25 16.5H12V12.0026H9.75C8.50433 12.0026 7.46886 13.0058 7.5 14.25C7.5 15.4942 8.50433 16.5 9.75 16.5H12V20.9922L9.75 21C6.01298 21 3 17.9827 3 14.25C3 10.5173 6.01298 7.5 9.75 7.5H12V12H14.25C15.4957 12 16.4998 11 16.4998 9.75C16.4998 8.5 15.4957 7.5 14.25 7.5H12V3Z" fill="currentColor"/>
+          </svg>
+        </a>
+        <div class="hidden ml-10 space-x-8 lg:block">
+            <a
+              class="text-base font-medium text-white hover:text-indigo-50"
+              href="/"
+              key="Home">
+              Home
+            </a>
+            <a
+              class="text-base font-medium text-white hover:text-indigo-50"
+              href="/posts/"
+              key="Archive">
+              Archive
+            </a>
+
+        </div>
+      </div>
+    </div>
+    <div class="py-4 flex flex-wrap justify-center space-x-6 lg:hidden">
+          <a
+            class="text-base font-medium text-white hover:text-indigo-50"
+            href="/"
+            key="Home">
+            Home
+          </a>
+          <a
+            class="text-base font-medium text-white hover:text-indigo-50"
+            href="/posts/"
+            key="Archive">
+            Archive
+          </a>
+
+    </div>
+  </nav>
+</header>
+
+
+<main>
+  <div class="relative bg-white overflow-hidden">
+
+    <h1>
+      <div class="relative bg-indigo-600 px-4 sm:px-6 lg:px-8">
+        
+          <div class="absolute inset-0">
+          <!--
+          Image: https://live.staticflickr.com/5448/9984565853_d24bd6657a_3k.jpg
+          License: CC BY 2.0
+          Credit: Siaron James https://www.flickr.com/photos/59489479@N08/
+          -->
+          <img class="w-full h-full object-cover" src="https://live.staticflickr.com/5448/9984565853_d24bd6657a_3k.jpg">
+            <div class="absolute inset-0 bg-indigo-300 mix-blend-multiply" aria-hidden="true"></div>
+          </div>
+        
+        <div class="text-lg relative py-16 sm:py-24 max-w-prose mx-auto">
+        <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">Debugging Flaky Tests</h1>
+        <p class="mt-6 text-xl text-white max-w-3xl">Strategies for maintaining reliability of automated test suites</p>
+        </div>
+      </div>
+    </h1>
+
+    <div class="relative px-4 sm:px-6 lg:px-8">
+
+      <div class="text-lg max-w-prose mx-auto mt-4">
+
+        <span class="block text-base text-center leading-8 text-indigo-600 font-semibold tracking-wide">
+          Nathan Jones
+          <span aria-hidden="true" class="sm:px-2">
+            &middot;
+          </span>
+          <time datetime="2021-10-26">26 Oct 2021</time>
+          <span aria-hidden="true" class="sm:px-2">
+            &middot;
+          </span>
+          8 min read
+        </span>
+
+        <div class="flex items-center justify-center bg-white pt-4">
+          <div class="flex flex-row space-y-4 space-y-0 space-x-4">
+  
+  <a href="
+    /tags/testing/
+  ">
+    <span class="
+      inline-flex
+      items-center
+      px-2.5
+      py-0.5
+      rounded-md
+      text-sm
+      font-medium
+      bg-indigo-100
+      text-indigo-800">
+      Testing
+    </span>
+  </a>
+
+  
+  <a href="
+    /tags/continuous-delivery/
+  ">
+    <span class="
+      inline-flex
+      items-center
+      px-2.5
+      py-0.5
+      rounded-md
+      text-sm
+      font-medium
+      bg-indigo-100
+      text-indigo-800">
+      Continuous Delivery
+    </span>
+  </a>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="mt-6 prose prose-indigo prose-lg text-gray-500 mx-auto">
+        <p>Flaky tests are unreliable tests which fail intermittently when run repeatedly
+even when no code changes are made. They are hard to reproduce and thus
+difficult to debug. They have a tendency to degrade the effectiveness of our
+test automation over time. This post describes some strategies for dealing with
+flaky tests.</p>
+<p>This article is written from the context of using Cucumber JS to perform
+functional testing of HTTP APIs.  The patterns are also applicable to other
+languages and other functional testing tools such as Cypress, Cucumber JVM or
+Specflow. The patterns here are generally not applicable to unit testing,
+however.</p>
+<h3>What makes flaky tests so bad?</h3>
+<p>Flaky tests tend to accumulate in our tests suites because we often don't
+notice them until long after they were written. When this happens, valuable
+context about what might have caused them has been lost.  When we encounter
+flaky tests we are often engaged in other unrelated work.  The intermittent
+unexpected failing test becomes a nuisance which results in us often just
+rerunning the test suite and moving on without solving the underlying issue.</p>
+<p>The presence of flaky tests causes us to distrust our test automation and slow
+our delivery pipelines as we learn to rerun failing pipeline steps and
+wait for the next green build.</p>
+<h3>What can we do about flaky tests?</h3>
+<p>There are a few simple things we can do to help keep flaky tests under control:</p>
+<ol>
+<li>Understand common causes for unreliable tests.</li>
+<li>Track failing tests over many runs with an error reporting tool.</li>
+<li>Use distributed tracing to correlate tests with application logs.</li>
+</ol>
+<p>Each of these are discussed below.</p>
+<h2>Common Causes for Flakiness</h2>
+<p>There are many causes for test flakiness. Some of the common ones are described
+below along with hints on how to avoid them.</p>
+<h3>Missing retry</h3>
+<p>When testing side effects from asynchronous processes there is often some
+non-deterministic amount of time before the expected state change can be
+observed.  Tests should retry the necessary interaction until the desired
+assertion passes. The <a href="https://www.npmjs.com/package/retry-assert">Retry Assert</a> library helps to simplify this type of
+retry logic.</p>
+<h3>Random test data</h3>
+<p>Functional tests often need to generate test data that avoids collisions.
+Sometimes we get unlucky and generate random values that collide. It might help
+to increase the address space or use a sequence instead of (or in addition to)
+the random value.</p>
+<h3>Missing await</h3>
+<p>This issue is not uncommon when testing with JavaScript; a step performs an
+asynchronous operation such as calling an API but does not wait for the promise
+to resolve.  Using <code>await</code> within <code>Array.forEach()</code> can also trigger this
+issue. A <code>for</code> loop or <code>Promise.all()</code> should be preferred.  Turning on the
+<a href="https://eslint.org/docs/rules/require-await">Require Await</a> linting rule can sometimes help to spot this issue earlier.</p>
+<h3>Conflicting stubbing</h3>
+<p>Functional test suites should define mocks of remote dependencies using a tool
+like <a href="http://wiremock.org/">Wiremock</a> to make tests fast and deterministic. If mocks are defined
+too broadly then they can inadvertently match on unrelated requests. In such
+cases the flakiness might depend on the scenario execution order and might not
+be noticed until scenario execution order changes at a much later date.</p>
+<p>Mocks should be defined so they match only for the interactions triggered by
+the related scenario. For example, instead of just matching on &quot;POST
+/some/resource&quot;, the stub should also try to match on some header or body
+attribute that is unique to the scenario. The <a href="https://www.npmjs.com/package/mock-cmdr">Mock Commander</a> library helps
+to make targeted stubbing like this easier.</p>
+<p>As a last resort, if the stubbed endpoint does not receive enough information
+to discriminate between invocation from two different scenarios, then a unique
+scenario trace id can be forwarded to the remote endpoint and matched by the
+stub.</p>
+<h3>Inaccurate date comparison</h3>
+<p>When a test asserts on a date value that comes back from the application under
+test (like a creation or expiry date) it needs to tolerate some
+non-deterministic amount of delay. Some naive solutions to this problem may
+introduce flakiness around edge cases such as when the test runs close to the
+start of a new minute, hour, or day etc.  For this reason we have created
+<a href="https://www.npmjs.com/package/@centrapay/jest-date-matchers">Jest Date Matchers</a> to make it easy to assert on ISO-8601 date strings with a
+configurable threshold.</p>
+<h3>Production bugs</h3>
+<p>Finally, there might actually be a real bug that is being intermittently
+triggered by the test suite. The intermittent nature of the failure might be
+due to race conditions when testing multiple API calls, over reliance on random
+test data or some other non-deterministic variable such as the server time or a
+missing <code>await</code> in production code.  If possible, the test suite should be
+changed to reliably reproduce the failure before fixing the underlying bug.</p>
+<h2>Tracking failing tests across runs</h2>
+<p>Investigation of flaky tests can take many attempts over a long period of time
+before the root cause is finally discovered. It is invaluable to have a shared
+record that includes details about occurrences of failures as well as any
+learnings that have been made along the way.</p>
+<p>The flaky test record could start out as a document that is updated manually
+when flaky tests are encountered but, to get a reliable record, the failure
+details should be automatically sent to an external tool.  Which tool to use is
+a subjective choice that will depend on the preferences of the team. For
+example, it may be a documentation tool, a test case management tool, a bug
+tracker or an error reporting tool.</p>
+<h3>Capturing Cucumber scenario failures</h3>
+<p>In Cucumber we can use an <a href="https://cucumber.io/docs/cucumber/api/#hooks">After hook</a> to capture details about each failed
+scenario.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="token comment">// features/support/index.js</span><br>cucumber<span class="token punctuation">.</span><span class="token function">After</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">scenario</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  <span class="token keyword">if</span> <span class="token punctuation">(</span>scenario<span class="token punctuation">.</span>result<span class="token punctuation">.</span>status <span class="token operator">==</span> <span class="token string">'failed'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token function">captureFailedScenario</span><span class="token punctuation">(</span>scenario<span class="token punctuation">)</span><span class="token punctuation">;</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3>Sending scenario failures to Sentry</h3>
+<p><a href="https://www.sentry.io/">Sentry</a> is an error reporting tool that helps engineering teams to monitor and
+diagnose issues with deployed software. The nature of flaky tests - being
+intermittent and long lived - makes them well-suited to being tracked by
+Sentry.</p>
+<p>To send a failed Cucumber scenario to Sentry we basically just need to pass
+<code>scenario.result.exception</code> to <code>Sentry.captureException()</code>. There's a few other
+things we should do to enhance the Sentry event though:</p>
+<ol>
+<li>Provide plenty of additional information to help identify the context for the
+failure such as the source file, git commit, git branch and build number.</li>
+<li>Use the scenario name as the &quot;fingerprint&quot; so that all failures for the same
+scenario are treated as the same issue (and similar errors for different
+scenarios are treated as distinct issues).</li>
+<li>Set the error name with a sensible static prefix to make them searchable and
+easy to identify.</li>
+</ol>
+<p>The following function demonstrates sending a failed Cucumber scenario to Sentry:</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">captureFailedScenario</span><span class="token punctuation">(</span><span class="token parameter">scenario</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  <span class="token keyword">const</span> scenarioName <span class="token operator">=</span> scenario<span class="token punctuation">.</span>pickle<span class="token punctuation">.</span>name<span class="token punctuation">;</span><br>  <span class="token keyword">const</span> error <span class="token operator">=</span> scenario<span class="token punctuation">.</span>result<span class="token punctuation">.</span>exception<span class="token punctuation">;</span><br>  Sentry<span class="token punctuation">.</span><span class="token function">withScope</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">scope</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    scope<span class="token punctuation">.</span><span class="token function">setContext</span><span class="token punctuation">(</span><span class="token string">'cucumber'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> scenarioName<span class="token punctuation">,</span> src<span class="token operator">:</span> scenario<span class="token punctuation">.</span>sourceLocation<span class="token punctuation">.</span>uri <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    scope<span class="token punctuation">.</span><span class="token function">setContext</span><span class="token punctuation">(</span><span class="token string">'source'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> gitBranch<span class="token punctuation">,</span> gitCommit<span class="token punctuation">,</span> buildNumber <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    scope<span class="token punctuation">.</span><span class="token function">setTag</span><span class="token punctuation">(</span><span class="token string">'branch'</span><span class="token punctuation">,</span> gitBranch<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    scope<span class="token punctuation">.</span><span class="token function">setFingerprint</span><span class="token punctuation">(</span><span class="token punctuation">[</span> scenarioName <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    Sentry<span class="token punctuation">.</span><span class="token function">captureException</span><span class="token punctuation">(</span><span class="token function">VError</span><span class="token punctuation">(</span><span class="token punctuation">{</span><br>      name<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Cucumber / Failed Scenario / </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>scenarioName<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span><br>      cause<span class="token operator">:</span> error<span class="token punctuation">,</span><br>    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre>
+<h2>Correlating tests with application logs</h2>
+<p>When a test scenario fails, our testing tool should give us some
+context about the unexpected result. Hopefully we get enough information to
+immediately identify the cause of the failure but often this is not the case,
+especially when dealing with flaky tests.</p>
+<p>If the test runner log does not contain enough information to diagnose the
+failure then the next port of call is the application logs. Unfortunately, when
+dealing with intermittent test failures, the relevant log entries will
+probably be lost in a sea of similar and unrelated log entries.</p>
+<p>To make the application logs searchable we need to apply distributed tracing
+techniques when running our test suite. One way to achieve this is to include
+the test name in an HTTP tracing header and make sure it is logged by the
+application server.</p>
+<h3>Sending a scenario trace header</h3>
+<p>The test suite can use a custom HTTP client abstraction to ensure a trace
+header is included for every request to the application under test.  In the
+example below, the &quot;AppClient&quot; instance, and its traceId, will be scoped to the
+test scenario. The AppClient will ensure the <code>traceId</code> attribute is included
+in an HTTP header (eg <code>X-Trace-Id</code>) for every request.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="token comment">// features/support/index.js</span><br>cucumber<span class="token punctuation">.</span><span class="token function">Before</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">scenario</span><span class="token punctuation">)</span><span class="token punctuation">{</span><br>  <span class="token keyword">this</span><span class="token punctuation">.</span>appClient <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppClient</span><span class="token punctuation">(</span><span class="token punctuation">{</span><br>    traceId<span class="token operator">:</span> scenario<span class="token punctuation">.</span>pickle<span class="token punctuation">.</span>name<span class="token punctuation">,</span><br>  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>If the application's web server is configured to log this header for all
+requests then it will now be possible to identify which logs relate to a
+specific test.</p>
+<h3>Accessing ephemeral test logs</h3>
+<p>Sometimes the intermittent failure has occurred during a CI pipeline step. In
+these cases we need to be able to get access to the application logs from the
+CI environment.</p>
+<p>If Docker Compose is used to stand up an ephemeral instance of an application
+within the CI environment then we may also need to run <code>docker compose logs</code> to
+export the application logs. The following bash script runs a test suite with
+Docker Compose and captures all logs:</p>
+<pre class="language-bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span><br><span class="token builtin class-name">set</span> -euo pipefail<br>docker compose run cucumber <span class="token operator">|</span> <span class="token function">tee</span> cucumber.log <span class="token operator">||</span> <span class="token assign-left variable">failed</span><span class="token operator">=</span>yes<br>docker compose logs --no-color <span class="token operator">></span> docker-compose.log<br><span class="token punctuation">[</span><span class="token punctuation">[</span> -z <span class="token string">"<span class="token variable">${failed<span class="token operator">:-</span>}</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token builtin class-name">exit</span> <span class="token number">1</span></code></pre>
+<p>If our pipeline runner captures these log files as artifacts then we will be
+able to investigate test failures even when we cannot reproduce them locally.</p>
+<h2>Summary</h2>
+<p>Flaky tests are inevitable. When too many flaky tests creep into a test suite
+they undermine the value of the automation.</p>
+<p>Keeping flaky tests under control requires conscious effort from the software
+delivery team.  Linking application logs to test scenarios and tracking
+recurring failures are two simple enhancements to test tooling that aids this
+effort.</p>
+
+        <div id="disqus_thread"></div>
+
+<script>
+  /*
+   * https://disqus.com/admin/universalcode/
+   */
+  var disqus_config = function () {
+    this.page.url = "https://tech.centrapay.com/posts/debugging-flaky-tests/";
+
+  };
+  (function() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://centrapay-tech.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="bg-white">
+  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
+    <div class="flex justify-center space-x-6 md:order-2">
+
+      <a href="https://www.facebook.com/centrapay" class="text-gray-400 hover:text-gray-500">
+        <span class="sr-only">Facebook</span>
+        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
+        </svg>
+      </a>
+
+      <a href="https://www.instagram.com/centrapay" class="text-gray-400 hover:text-gray-500">
+        <span class="sr-only">Instagram</span>
+        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+        </svg>
+      </a>
+
+      <a href="https://twitter.com/centrapay" class="text-gray-400 hover:text-gray-500">
+        <span class="sr-only">Twitter</span>
+        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+        </svg>
+      </a>
+
+      <a href="https://github.com/centrapay" class="text-gray-400 hover:text-gray-500">
+        <span class="sr-only">GitHub</span>
+        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+        </svg>
+      </a>
+
+    </div>
+    <div class="mt-8 md:mt-0 md:order-1">
+      <p class="text-center text-base text-gray-400">
+        Copyright &copy; 2021 <a href="https://centrapay.com/">Centrapay</a>. All rights reserved.
+      </p>
+    </div>
+    <div class="mt-8 md:mt-0 md:order-1" >
+      <p class="text-center text-base text-white" aria-hidden="true">
+        2021-10-26T08:11:49.073Z
+        <br>
+        3126cc7a4c8e4f2a42619acb3c8e27e9c517662d
+      </p>
+    </div>
+  </div>
+</footer>
+
+
+
+    <!-- Current page: /posts/debugging-flaky-tests/ -->
+  </body>
+</html>

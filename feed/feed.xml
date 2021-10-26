@@ -5,8 +5,169 @@
 	
 	<link href="https://tech.centrapay.com/feed/feed.xml" rel="self"/>
 	<link href="https://tech.centrapay.com/"/>
-	<updated>2018-09-30T00:00:00Z</updated>
+	<updated>2021-10-26T00:00:00Z</updated>
 	<id>https://tech.centrapay.com</id>
+	
+	<entry>
+		<title>Debugging Flaky Tests</title>
+		<link href="https://tech.centrapay.com/posts/debugging-flaky-tests/"/>
+		<updated>2021-10-26T00:00:00Z</updated>
+		<id>https://tech.centrapay.com/posts/debugging-flaky-tests/</id>
+		<content type="html">&lt;p&gt;Flaky tests are unreliable tests which fail intermittently when run repeatedly
+even when no code changes are made. They are hard to reproduce and thus
+difficult to debug. They have a tendency to degrade the effectiveness of our
+test automation over time. This post describes some strategies for dealing with
+flaky tests.&lt;/p&gt;
+&lt;p&gt;This article is written from the context of using Cucumber JS to perform
+functional testing of HTTP APIs.  The patterns are also applicable to other
+languages and other functional testing tools such as Cypress, Cucumber JVM or
+Specflow. The patterns here are generally not applicable to unit testing,
+however.&lt;/p&gt;
+&lt;h3&gt;What makes flaky tests so bad?&lt;/h3&gt;
+&lt;p&gt;Flaky tests tend to accumulate in our tests suites because we often don&#39;t
+notice them until long after they were written. When this happens, valuable
+context about what might have caused them has been lost.  When we encounter
+flaky tests we are often engaged in other unrelated work.  The intermittent
+unexpected failing test becomes a nuisance which results in us often just
+rerunning the test suite and moving on without solving the underlying issue.&lt;/p&gt;
+&lt;p&gt;The presence of flaky tests causes us to distrust our test automation and slow
+our delivery pipelines as we learn to rerun failing pipeline steps and
+wait for the next green build.&lt;/p&gt;
+&lt;h3&gt;What can we do about flaky tests?&lt;/h3&gt;
+&lt;p&gt;There are a few simple things we can do to help keep flaky tests under control:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Understand common causes for unreliable tests.&lt;/li&gt;
+&lt;li&gt;Track failing tests over many runs with an error reporting tool.&lt;/li&gt;
+&lt;li&gt;Use distributed tracing to correlate tests with application logs.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Each of these are discussed below.&lt;/p&gt;
+&lt;h2&gt;Common Causes for Flakiness&lt;/h2&gt;
+&lt;p&gt;There are many causes for test flakiness. Some of the common ones are described
+below along with hints on how to avoid them.&lt;/p&gt;
+&lt;h3&gt;Missing retry&lt;/h3&gt;
+&lt;p&gt;When testing side effects from asynchronous processes there is often some
+non-deterministic amount of time before the expected state change can be
+observed.  Tests should retry the necessary interaction until the desired
+assertion passes. The &lt;a href=&quot;https://www.npmjs.com/package/retry-assert&quot;&gt;Retry Assert&lt;/a&gt; library helps to simplify this type of
+retry logic.&lt;/p&gt;
+&lt;h3&gt;Random test data&lt;/h3&gt;
+&lt;p&gt;Functional tests often need to generate test data that avoids collisions.
+Sometimes we get unlucky and generate random values that collide. It might help
+to increase the address space or use a sequence instead of (or in addition to)
+the random value.&lt;/p&gt;
+&lt;h3&gt;Missing await&lt;/h3&gt;
+&lt;p&gt;This issue is not uncommon when testing with JavaScript; a step performs an
+asynchronous operation such as calling an API but does not wait for the promise
+to resolve.  Using &lt;code&gt;await&lt;/code&gt; within &lt;code&gt;Array.forEach()&lt;/code&gt; can also trigger this
+issue. A &lt;code&gt;for&lt;/code&gt; loop or &lt;code&gt;Promise.all()&lt;/code&gt; should be preferred.  Turning on the
+&lt;a href=&quot;https://eslint.org/docs/rules/require-await&quot;&gt;Require Await&lt;/a&gt; linting rule can sometimes help to spot this issue earlier.&lt;/p&gt;
+&lt;h3&gt;Conflicting stubbing&lt;/h3&gt;
+&lt;p&gt;Functional test suites should define mocks of remote dependencies using a tool
+like &lt;a href=&quot;http://wiremock.org/&quot;&gt;Wiremock&lt;/a&gt; to make tests fast and deterministic. If mocks are defined
+too broadly then they can inadvertently match on unrelated requests. In such
+cases the flakiness might depend on the scenario execution order and might not
+be noticed until scenario execution order changes at a much later date.&lt;/p&gt;
+&lt;p&gt;Mocks should be defined so they match only for the interactions triggered by
+the related scenario. For example, instead of just matching on &amp;quot;POST
+/some/resource&amp;quot;, the stub should also try to match on some header or body
+attribute that is unique to the scenario. The &lt;a href=&quot;https://www.npmjs.com/package/mock-cmdr&quot;&gt;Mock Commander&lt;/a&gt; library helps
+to make targeted stubbing like this easier.&lt;/p&gt;
+&lt;p&gt;As a last resort, if the stubbed endpoint does not receive enough information
+to discriminate between invocation from two different scenarios, then a unique
+scenario trace id can be forwarded to the remote endpoint and matched by the
+stub.&lt;/p&gt;
+&lt;h3&gt;Inaccurate date comparison&lt;/h3&gt;
+&lt;p&gt;When a test asserts on a date value that comes back from the application under
+test (like a creation or expiry date) it needs to tolerate some
+non-deterministic amount of delay. Some naive solutions to this problem may
+introduce flakiness around edge cases such as when the test runs close to the
+start of a new minute, hour, or day etc.  For this reason we have created
+&lt;a href=&quot;https://www.npmjs.com/package/@centrapay/jest-date-matchers&quot;&gt;Jest Date Matchers&lt;/a&gt; to make it easy to assert on ISO-8601 date strings with a
+configurable threshold.&lt;/p&gt;
+&lt;h3&gt;Production bugs&lt;/h3&gt;
+&lt;p&gt;Finally, there might actually be a real bug that is being intermittently
+triggered by the test suite. The intermittent nature of the failure might be
+due to race conditions when testing multiple API calls, over reliance on random
+test data or some other non-deterministic variable such as the server time or a
+missing &lt;code&gt;await&lt;/code&gt; in production code.  If possible, the test suite should be
+changed to reliably reproduce the failure before fixing the underlying bug.&lt;/p&gt;
+&lt;h2&gt;Tracking failing tests across runs&lt;/h2&gt;
+&lt;p&gt;Investigation of flaky tests can take many attempts over a long period of time
+before the root cause is finally discovered. It is invaluable to have a shared
+record that includes details about occurrences of failures as well as any
+learnings that have been made along the way.&lt;/p&gt;
+&lt;p&gt;The flaky test record could start out as a document that is updated manually
+when flaky tests are encountered but, to get a reliable record, the failure
+details should be automatically sent to an external tool.  Which tool to use is
+a subjective choice that will depend on the preferences of the team. For
+example, it may be a documentation tool, a test case management tool, a bug
+tracker or an error reporting tool.&lt;/p&gt;
+&lt;h3&gt;Capturing Cucumber scenario failures&lt;/h3&gt;
+&lt;p&gt;In Cucumber we can use an &lt;a href=&quot;https://cucumber.io/docs/cucumber/api/#hooks&quot;&gt;After hook&lt;/a&gt; to capture details about each failed
+scenario.&lt;/p&gt;
+&lt;pre class=&quot;language-javascript&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;// features/support/index.js&lt;/span&gt;&lt;br /&gt;cucumber&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;After&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token parameter&quot;&gt;scenario&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br /&gt;  &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;scenario&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;result&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;status &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&#39;failed&#39;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br /&gt;    &lt;span class=&quot;token function&quot;&gt;captureFailedScenario&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;scenario&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;br /&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Sending scenario failures to Sentry&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.sentry.io/&quot;&gt;Sentry&lt;/a&gt; is an error reporting tool that helps engineering teams to monitor and
+diagnose issues with deployed software. The nature of flaky tests - being
+intermittent and long lived - makes them well-suited to being tracked by
+Sentry.&lt;/p&gt;
+&lt;p&gt;To send a failed Cucumber scenario to Sentry we basically just need to pass
+&lt;code&gt;scenario.result.exception&lt;/code&gt; to &lt;code&gt;Sentry.captureException()&lt;/code&gt;. There&#39;s a few other
+things we should do to enhance the Sentry event though:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Provide plenty of additional information to help identify the context for the
+failure such as the source file, git commit, git branch and build number.&lt;/li&gt;
+&lt;li&gt;Use the scenario name as the &amp;quot;fingerprint&amp;quot; so that all failures for the same
+scenario are treated as the same issue (and similar errors for different
+scenarios are treated as distinct issues).&lt;/li&gt;
+&lt;li&gt;Set the error name with a sensible static prefix to make them searchable and
+easy to identify.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The following function demonstrates sending a failed Cucumber scenario to Sentry:&lt;/p&gt;
+&lt;pre class=&quot;language-javascript&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;captureFailedScenario&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token parameter&quot;&gt;scenario&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br /&gt;  &lt;span class=&quot;token keyword&quot;&gt;const&lt;/span&gt; scenarioName &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; scenario&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;pickle&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;  &lt;span class=&quot;token keyword&quot;&gt;const&lt;/span&gt; error &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; scenario&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;result&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;exception&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;  Sentry&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;withScope&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token parameter&quot;&gt;scope&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br /&gt;    scope&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;setContext&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&#39;cucumber&#39;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; scenarioName&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; src&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; scenario&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;sourceLocation&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;uri &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;    scope&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;setContext&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&#39;source&#39;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; gitBranch&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; gitCommit&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; buildNumber &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;    scope&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;setTag&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&#39;branch&#39;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; gitBranch&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;    scope&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;setFingerprint&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt; scenarioName &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;    Sentry&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;captureException&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;VError&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br /&gt;      name&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token template-string&quot;&gt;&lt;span class=&quot;token template-punctuation string&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;Cucumber / Failed Scenario / &lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token interpolation-punctuation punctuation&quot;&gt;${&lt;/span&gt;scenarioName&lt;span class=&quot;token interpolation-punctuation punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token template-punctuation string&quot;&gt;`&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;&lt;br /&gt;      cause&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; error&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;&lt;br /&gt;    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Correlating tests with application logs&lt;/h2&gt;
+&lt;p&gt;When a test scenario fails, our testing tool should give us some
+context about the unexpected result. Hopefully we get enough information to
+immediately identify the cause of the failure but often this is not the case,
+especially when dealing with flaky tests.&lt;/p&gt;
+&lt;p&gt;If the test runner log does not contain enough information to diagnose the
+failure then the next port of call is the application logs. Unfortunately, when
+dealing with intermittent test failures, the relevant log entries will
+probably be lost in a sea of similar and unrelated log entries.&lt;/p&gt;
+&lt;p&gt;To make the application logs searchable we need to apply distributed tracing
+techniques when running our test suite. One way to achieve this is to include
+the test name in an HTTP tracing header and make sure it is logged by the
+application server.&lt;/p&gt;
+&lt;h3&gt;Sending a scenario trace header&lt;/h3&gt;
+&lt;p&gt;The test suite can use a custom HTTP client abstraction to ensure a trace
+header is included for every request to the application under test.  In the
+example below, the &amp;quot;AppClient&amp;quot; instance, and its traceId, will be scoped to the
+test scenario. The AppClient will ensure the &lt;code&gt;traceId&lt;/code&gt; attribute is included
+in an HTTP header (eg &lt;code&gt;X-Trace-Id&lt;/code&gt;) for every request.&lt;/p&gt;
+&lt;pre class=&quot;language-javascript&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;// features/support/index.js&lt;/span&gt;&lt;br /&gt;cucumber&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;Before&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token parameter&quot;&gt;scenario&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br /&gt;  &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;appClient &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;AppClient&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br /&gt;    traceId&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; scenario&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;pickle&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;&lt;br /&gt;  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br /&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If the application&#39;s web server is configured to log this header for all
+requests then it will now be possible to identify which logs relate to a
+specific test.&lt;/p&gt;
+&lt;h3&gt;Accessing ephemeral test logs&lt;/h3&gt;
+&lt;p&gt;Sometimes the intermittent failure has occurred during a CI pipeline step. In
+these cases we need to be able to get access to the application logs from the
+CI environment.&lt;/p&gt;
+&lt;p&gt;If Docker Compose is used to stand up an ephemeral instance of an application
+within the CI environment then we may also need to run &lt;code&gt;docker compose logs&lt;/code&gt; to
+export the application logs. The following bash script runs a test suite with
+Docker Compose and captures all logs:&lt;/p&gt;
+&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token shebang important&quot;&gt;#!/bin/bash&lt;/span&gt;&lt;br /&gt;&lt;span class=&quot;token builtin class-name&quot;&gt;set&lt;/span&gt; -euo pipefail&lt;br /&gt;docker compose run cucumber &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;tee&lt;/span&gt; cucumber.log &lt;span class=&quot;token operator&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;failed&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;yes&lt;br /&gt;docker compose logs --no-color &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; docker-compose.log&lt;br /&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt; -z &lt;span class=&quot;token string&quot;&gt;&quot;&lt;span class=&quot;token variable&quot;&gt;${failed&lt;span class=&quot;token operator&quot;&gt;:-&lt;/span&gt;}&lt;/span&gt;&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;exit&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If our pipeline runner captures these log files as artifacts then we will be
+able to investigate test failures even when we cannot reproduce them locally.&lt;/p&gt;
+&lt;h2&gt;Summary&lt;/h2&gt;
+&lt;p&gt;Flaky tests are inevitable. When too many flaky tests creep into a test suite
+they undermine the value of the automation.&lt;/p&gt;
+&lt;p&gt;Keeping flaky tests under control requires conscious effort from the software
+delivery team.  Linking application logs to test scenarios and tracking
+recurring failures are two simple enhancements to test tooling that aids this
+effort.&lt;/p&gt;
+</content>
+	</entry>
 	
 	<entry>
 		<title>This is my fourth post</title>
