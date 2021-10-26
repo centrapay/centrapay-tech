@@ -3,7 +3,8 @@ title: This is my first post
 description: This is a post on My Blog about agile frameworks.
 date: 2018-05-01
 author: nathan
-img: https://live.staticflickr.com/978/40356790010_6c7a70e407_k.jpg
+img:
+  url: https://live.staticflickr.com/978/40356790010_6c7a70e407_k.jpg
 tags:
   - another tag
 layout: post
