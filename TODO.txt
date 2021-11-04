@@ -1,0 +1,10 @@
+
+1. Readme
+
+  https://mozilla.github.io/nunjucks/templating
+
+2. Test using dummy posts
+
+3. Redirects
+   * generate client side redirect from netlify redirects file
+
